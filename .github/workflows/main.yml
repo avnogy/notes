@@ -1,0 +1,109 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - master
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        jekyll: ["< 4.0", "< 5.0"]
+    env:
+      JEKYLL_VERSION: ${{ matrix.jekyll }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.4'
+          bundler-cache: true
+      - name: Setup Pages
+        id: pages
+        uses: actions/configure-pages@v5
+      - name: Build with Jekyll
+        run: bundle exec jekyll build --baseurl "${{ steps.pages.outputs.base_path }}"
+        env:
+          JEKYLL_ENV: production
+      - name: Upload artifact
+        if: ${{ matrix.jekyll == '< 5.0' }}
+        uses: actions/upload-pages-artifact@v3
+
+  pa11y-ci:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.4'
+          bundler-cache: true
+      - name: Setup Chrome
+        uses: browser-actions/setup-chrome@v1
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 'lts/*'
+          check-latest: true
+      - run: npm install -g pa11y-ci
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: github-pages
+      - name: Extract artifact
+        run: |
+          mkdir _site
+          tar -xf artifact.tar -C _site/
+      - name: Run pa11y-ci
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          url="$(gh api "repos/$GITHUB_REPOSITORY/pages" --jq '.html_url')"
+          (bundle exec jekyll serve -d _tmp_site --no-watch & echo $! >&3) 3>_jekyll.pid | grep -q 'Server running'
+          pa11y-ci --sitemap 'http://localhost:4000/whiteglass/sitemap.xml' \
+            --sitemap-find "$url" --sitemap-replace 'http://localhost:4000/whiteglass/'
+          kill -9 "$(cat _jekyll.pid)"
+          rm -f _jekyll.pid
+          rm -rf _tmp_site
+
+  validate:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: github-pages
+      - name: Extract artifact
+        run: |
+          mkdir _site
+          tar -xf artifact.tar -C _site/
+      - name: HTML5Validator
+        uses: Cyb3r-Jak3/html5validator-action@41633d488eb36e18fd1a95ffc83daf1bf22a75bd # v7.2.0
+        with:
+          root: _site/
+          css: true
+          skip_git_check: true
+
+  deploy:
+    needs: [build, pa11y-ci, validate]
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
