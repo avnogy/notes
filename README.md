@@ -13,3 +13,6 @@ Here's a drawing of a cat:
 						 |、˜〵          
 						 じしˍ,)ノ
 ```
+
+
+[![CI](https://github.com/avnogy/notes/actions/workflows/main.yml/badge.svg?branch=main)](https://github.com/avnogy/notes/actions/workflows/main.yml)
