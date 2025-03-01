@@ -47,8 +47,7 @@ client_socket, address = server_socket.accept()
 
 After running the sockets code and the manual code, we can see in `tcpdump` that we sent a SYN packet, but we got no response.
 
-![](../assets/code/scapyrawsocket/Pasted%20image%2020250301200358.png)
-
+![](/assets/code/scapyrawsocket/Pasted%20image%2020250301200358.png)
 > We would expect to get either a SYN+ACK segment from our sockets code, or an RST segment if something went wrong, but getting nothing is weird.
 
 ## Troubleshooting Scapy with Loopback Interface
@@ -60,7 +59,7 @@ The issue arises because in Linux, the lo interface is a special interface where
 Practically, this also means that the kernel doesn't create IP headers for packets routed using this interface, and therefore it doesn't deal with any non L3 packets. Because we created L2 packets, they weren't parsed, and we got no response.
 
 Here is an image I found in a random website in Chinese[^1] illustrating this concept:
-![](../assets/code/scapyrawsocket/Pasted%20image%2020250301203330.png)
+![](/assets/code/scapyrawsocket/Pasted%20image%2020250301203330.png)
 
 ## The solution
 
@@ -72,6 +71,7 @@ conf.L3socket = L3RawSocket
 ```
 
 By making this adjustment, we can successfully use Scapy with the loopback interface on Linux systems.
-![](../assets/code/scapyrawsocket/Pasted%20image%2020250301200310.png)
-___
-[^1]: https://www.cnblogs.com/jiujuan/p/9388517.html
+![](/assets/code/scapyrawsocket/Pasted%20image%2020250301200310.png)
+
+
+[^1]: <https://www.cnblogs.com/jiujuan/p/9388517.html>
