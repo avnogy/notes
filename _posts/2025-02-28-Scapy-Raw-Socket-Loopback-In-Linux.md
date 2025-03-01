@@ -73,5 +73,6 @@ conf.L3socket = L3RawSocket
 By making this adjustment, we can successfully use Scapy with the loopback interface on Linux systems.
 ![](/notes/assets/code/scapyrawsocket/Pasted%20image%2020250301200310.png)
 
+---
 
 [^1]: <https://www.cnblogs.com/jiujuan/p/9388517.html>
