@@ -8,8 +8,8 @@ If you stumble upon something that's helpful or sparks your interest, that's gre
 Here's a drawing of a cat:
 
 ```
-						  ╱|、
-						  (˚ˎ 。7  
-						  |、˜〵          
-						  じしˍ,)ノ
+						 ╱|、
+						 (˚ˎ 。7  
+						 |、˜〵          
+						 じしˍ,)ノ
 ```
