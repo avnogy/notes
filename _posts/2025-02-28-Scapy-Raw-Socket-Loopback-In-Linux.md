@@ -72,6 +72,7 @@ conf.L3socket = L3RawSocket
 
 By making this adjustment, we can successfully use Scapy with the loopback interface on Linux systems.
 ![](/notes/assets/code/scapyrawsocket/Pasted%20image%2020250301200310.png)
+> We would still need to block the automatic RST coming from our made up port in the raw-socket side to get a full working handshake, but this would require using a firewall to block it from coming in or out, and maybe i'll show it another time..
 
 ---
 
