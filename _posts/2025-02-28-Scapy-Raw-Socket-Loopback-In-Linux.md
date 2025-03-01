@@ -9,6 +9,7 @@ tags:
   - rawsocket
   - linux
 ---
+
 While attempting to simulate a TCP 3-way handshake using Scapy, I encountered an issue where I did not get get a response from `127.0.0.1` on the loopback interface.
 Running my code on a different interface using two different IP addresses worked fine, but this was interesting.
 ## The Initial try
