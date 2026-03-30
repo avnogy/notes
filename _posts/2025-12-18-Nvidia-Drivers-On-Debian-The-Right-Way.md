@@ -25,7 +25,7 @@ I downloaded the official installer and followed the TUI installer. However, thi
 
 ## How to properly install Nvidia driver installations on Debian {#installation}
 
-1. Add the repository from https://docs.nvidia.com/datacenter/tesla/driver-installation-guide/debian.html#network-repository-enablement-amd64
+1. Add the repository from [here](https://docs.nvidia.com/datacenter/tesla/driver-installation-guide/debian.html#network-repository-enablement-amd64)
 2. Install via apt:
 
 ```bash
